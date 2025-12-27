@@ -136,31 +136,19 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ==========================================================
-     * 🔥 老王极简全屏方案 - KISS原则！
-     *
-     * 设计理念：
-     * 1. html/body 铺满视口，禁止滚动
-     * 2. phone-container 在桌面居中，在手机端填满
-     * 3. 使用 inset:0 替代四个方向单独设置
-     * 4. 只用一种高度单位：100%（最兼容）
-     * 5. 不依赖JS添加class，纯CSS媒体查询搞定
-     * ========================================================== */
-
     html {
+      /* 修复iOS Safari 100vh问题 - 使用动态视口高度 */
       height: 100%;
-      overflow: hidden;
-      /* 禁止iOS橡皮筋效果 */
-      overscroll-behavior: none;
-      -webkit-overflow-scrolling: touch;
+      height: 100dvh; /* fallback for older browsers */
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-secondary);
       color: var(--text-primary);
-      /* 备份版本的简单方式 - 不用position:fixed，键盘才能正常推动内容 */
-      min-height: 100vh;
+      /* 使用100%继承html的dvh高度，这样键盘弹起时能正确收缩 */
+      min-height: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -168,12 +156,16 @@
       margin: 0;
       overflow: hidden;
       transition: background 0.3s ease, color 0.3s ease;
+      /* 防止iOS橡皮筋滚动 */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* Phone Container - 备份版本方式，vw/vh单位 */
+    /* Phone Container - 使用dvh支持动态视口（键盘弹起自动适应） */
     .phone-container {
       width: 100vw;
       height: 100vh;
+      height: 100dvh; /* 动态视口高度，键盘弹起时自动收缩 */
       max-width: 430px;
       max-height: 932px;
       background: var(--phone-frame-color);
@@ -207,6 +199,28 @@
       .dock {
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0));
       }
+    }
+
+    /* ==========================================================
+     * ⌨️ 键盘弹出时的样式适配
+     * ========================================================== */
+
+    /* 键盘弹出时，确保输入区域固定在可见区域底部 */
+    .keyboard-visible .chat-input-area,
+    .keyboard-visible .sms-input-area,
+    .keyboard-visible .detail-comment-input-area {
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
+      /* 移除safe-area-inset-bottom，键盘已经覆盖了 */
+      padding-bottom: 12px !important;
+    }
+
+    /* 键盘弹出时，消息区域需要能滚动 */
+    .keyboard-visible .chat-messages-area,
+    .keyboard-visible .sms-messages-container {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* 手机边框效果 - 已移除多余的border细线 */
@@ -1530,6 +1544,7 @@
       /* 限制最大尺寸（与手机框一致）*/
       width: 100vw !important;
       height: 100vh !important;
+      height: 100dvh !important; /* 动态视口高度，键盘弹起时自动收缩 */
       max-width: 430px !important;
       max-height: 932px !important;
 
@@ -9613,6 +9628,7 @@
 
     .chat-settings-screen .app-content {
       min-height: 100vh;
+      min-height: 100dvh; /* 动态视口高度 */
       padding-bottom: 60px;
     }
 
