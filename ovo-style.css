@@ -202,23 +202,39 @@
     }
 
     /* ==========================================================
-     * ⌨️ 键盘弹出时的样式适配
+     * ⌨️ 键盘弹出时的样式适配 - PWA全屏模式专用
+     * JS会设置 --keyboard-height 和 --visible-height 变量
      * ========================================================== */
+
+    :root {
+      --keyboard-height: 0px;
+      --visible-height: 100vh;
+    }
+
+    /* 键盘弹出时，phone-container高度由JS控制 */
+    .keyboard-visible .phone-container {
+      /* 使用JS设置的可见高度 */
+      height: var(--visible-height) !important;
+      transition: height 0.1s ease-out;
+    }
 
     /* 键盘弹出时，确保输入区域固定在可见区域底部 */
     .keyboard-visible .chat-input-area,
     .keyboard-visible .sms-input-area,
     .keyboard-visible .detail-comment-input-area {
-      position: sticky;
-      bottom: 0;
+      position: relative;
       z-index: 100;
       /* 移除safe-area-inset-bottom，键盘已经覆盖了 */
-      padding-bottom: 12px !important;
+      padding-bottom: 8px !important;
+      /* 确保不被遮挡 */
+      flex-shrink: 0;
     }
 
-    /* 键盘弹出时，消息区域需要能滚动 */
+    /* 键盘弹出时，消息区域需要收缩以让出空间给输入框 */
     .keyboard-visible .chat-messages-area,
-    .keyboard-visible .sms-messages-container {
+    .keyboard-visible .sms-messages {
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
