@@ -7291,9 +7291,6 @@
       gap: 10px;
       position: relative;
       flex-shrink: 0;
-      /* Android键盘适配 - 使用CSS变量控制位置 */
-      transform: translateY(var(--keyboard-offset, 0));
-      transition: transform 0.15s ease-out;
     }
 
     /* 键盘弹起时的固定定位模式（备用方案） */
