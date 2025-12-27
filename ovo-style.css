@@ -201,18 +201,6 @@
       }
     }
 
-    /* ==========================================================
-     * ⌨️ 键盘适配 - JS用transform移动输入框
-     * ========================================================== */
-
-    .keyboard-visible .chat-input-area,
-    .keyboard-visible .sms-input-area {
-      z-index: 9999;
-      position: relative;
-      background: var(--bg-primary);
-      padding-bottom: 8px !important;
-    }
-
     /* 手机边框效果 - 已移除多余的border细线 */
     .phone-frame {
       position: absolute;
