@@ -1,6 +1,10 @@
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500&display=swap');
 
     :root {
+      /* Viewport sizing (Android/iOS full-height without vh bugs) */
+      --app-height: 100vh;
+      --app-width: 100vw;
+
       /* Light Mode Colors - 温度模块清爽配色 */
       --bg-primary: #ffffff;
       --bg-secondary: #fafafa;
@@ -65,6 +69,14 @@
       --sms-date-bg: rgba(0,0,0,0.06);
       --sms-date-text: #555555;
       --sms-typing-dot: #888888;
+    }
+
+    @supports (height: 100svh) {
+      :root { --app-height: 100svh; }
+    }
+
+    @supports (height: 100dvh) {
+      :root { --app-height: 100dvh; }
     }
 
     [data-theme='dark'] {
@@ -137,18 +149,15 @@
     }
 
     html {
-      /* 修复iOS Safari 100vh问题 - 使用动态视口高度 */
-      height: 100%;
-      height: 100dvh; /* fallback for older browsers */
+      height: var(--app-height);
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-secondary);
       color: var(--text-primary);
-      /* 使用100%继承html的dvh高度，这样键盘弹起时能正确收缩 */
-      min-height: 100%;
-      height: 100%;
+      min-height: var(--app-height);
+      height: var(--app-height);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -161,11 +170,10 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Phone Container - 使用dvh支持动态视口（键盘弹起自动适应） */
+    /* Phone Container - 固定视口高度（配合resizes-visual） */
     .phone-container {
       width: 100vw;
-      height: 100vh;
-      height: 100dvh; /* 动态视口高度，键盘弹起时自动收缩 */
+      height: var(--app-height);
       max-width: 430px;
       max-height: 932px;
       background: var(--phone-frame-color);
@@ -178,7 +186,10 @@
      * 📱 移动端全屏模式（宽度<=430px 或 PWA/standalone模式）
      * 一个媒体查询搞定所有移动端场景！
      * ========================================================== */
-    @media (max-width: 430px), (display-mode: standalone), (display-mode: fullscreen) {
+    @media (max-width: 430px) and (pointer: coarse),
+           (max-height: 500px) and (pointer: coarse),
+           (display-mode: standalone),
+           (display-mode: fullscreen) {
       .phone-container {
         max-width: none;
         max-height: none;
@@ -191,6 +202,16 @@
       .boot-screen,
       .app-screen {
         border-radius: 0;
+      }
+
+      /* 键盘弹起时固定输入栏：移动端不应被 430px 限制 */
+      .chat-input-area.keyboard-visible,
+      .sms-input-area.keyboard-visible,
+      #x-message-detail-page .message-input-area.keyboard-visible {
+        max-width: none !important;
+        margin: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
       }
     }
 
@@ -1530,17 +1551,13 @@
     #x-message-detail-page,
     #live-room-container,
     #x-map-container {
-      /* 限制最大尺寸（与手机框一致）*/
       width: 100vw !important;
-      height: 100vh !important;
-      height: 100dvh !important; /* 动态视口高度，键盘弹起时自动收缩 */
-      max-width: 430px !important;
-      max-height: 932px !important;
-
-      /* 视觉效果 */
+      height: var(--app-height) !important;
+      max-width: none !important;
+      max-height: none !important;
       overflow: hidden !important;
-      box-shadow: var(--shadow-xl) !important;
-      border-radius: inherit !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
     }
 
     /* App Header */
