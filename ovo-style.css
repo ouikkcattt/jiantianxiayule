@@ -13,6 +13,7 @@
       --text-secondary: #666666;
       --text-tertiary: #888888;
       --border-color: #e0e0e0;
+      --post-separator: #00000008;
       --progress-bg: rgba(0, 0, 0, 0.1);
       --progress-fill: rgba(0, 0, 0, 0.8);
       --accent-color: #000000;
@@ -88,6 +89,7 @@
       --text-secondary: #888888;
       --text-tertiary: #666666;
       --border-color: #2a2a2a;
+      --post-separator: #262626;
       --progress-bg: rgba(255, 255, 255, 0.15);
       --progress-fill: rgba(255, 255, 255, 0.9);
       --accent-color: #ffffff;
@@ -1289,6 +1291,27 @@
       z-index: 1;
     }
 
+    /* 🔥 自定义图标样式 - 支持透明底 */
+    .app-icon-img.has-custom-image {
+      background: transparent !important;
+      padding: 0;
+      border: none !important; /* 🔥 移除边框 */
+    }
+
+    /* 🔥 禁用自定义图标的伪元素背景 */
+    .app-icon-img.has-custom-image::before {
+      display: none !important; /* 🔥 彻底禁用伪元素 */
+    }
+
+    .app-icon-img.has-custom-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* 改为contain，保持图标完整性，不裁剪 */
+      border-radius: inherit;
+      position: relative;
+      z-index: 2;
+    }
+
     .app-label {
       font-size: 11px;
       color: var(--text-secondary);
@@ -1369,6 +1392,27 @@
       stroke-width: 2;
       position: relative;
       z-index: 1;
+    }
+
+    /* 🔥 Dock自定义图标样式 - 支持透明底 */
+    .dock-icon.has-custom-image {
+      background: transparent !important;
+      border: none !important;
+      padding: 0;
+    }
+
+    /* 🔥 禁用Dock自定义图标的伪元素背景 */
+    .dock-icon.has-custom-image::before {
+      display: none !important; /* 🔥 彻底禁用伪元素 */
+    }
+
+    .dock-icon.has-custom-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* 保持图标完整性，不裁剪 */
+      border-radius: inherit;
+      position: relative;
+      z-index: 2;
     }
 
     /* Decorative Elements */
@@ -3218,14 +3262,17 @@
 
     .icon-mgmt-preview-icon.has-custom-image {
       padding: 0;
-      border: none;
+      border: none !important; /* 🔥 强制移除边框 */
+      background: transparent !important; /* 🔥 支持透明底 */
     }
 
     .icon-mgmt-preview-icon.has-custom-image img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain; /* 🔥 改为contain，保持图标完整性，不裁剪 */
       border-radius: 14px 2px 14px 2px;
+      position: relative;
+      z-index: 2;
     }
 
     .icon-mgmt-preview-icon.dock-icon-preview {
@@ -4454,6 +4501,65 @@
       padding: 0 !important;
       margin: 0 !important;
       overflow: hidden !important;
+    }
+
+    /* 🔥 【老王新增】全局时间栏覆盖层 - 独立于homeScreen */
+    .global-status-bar-overlay {
+      display: none; /* 默认隐藏 */
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(44px + env(safe-area-inset-top, 0));
+      padding: 0 24px;
+      padding-top: calc(12px + env(safe-area-inset-top, 0));
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 9999;
+      /* 无背景色，与原status-bar保持一致 */
+      color: var(--text-primary);
+      pointer-events: none;
+    }
+
+    .global-status-bar-overlay .status-left,
+    .global-status-bar-overlay .status-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .global-status-bar-overlay .status-icon {
+      opacity: 0.8;
+    }
+
+    /* 开启全局时间栏时显示覆盖层 */
+    .global-status-bar .global-status-bar-overlay {
+      display: flex !important;
+    }
+
+    /* 开启全局时间栏时，隐藏homeScreen内的原status-bar避免重复 */
+    .global-status-bar .home-screen .status-bar {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    /* 启动画面时隐藏全局时间栏 */
+    .boot-screen:not(.hidden) ~ .global-status-bar-overlay,
+    .global-status-bar .boot-screen:not(.hidden) ~ * .global-status-bar-overlay {
+      display: none !important;
+    }
+
+    /* 时间栏贴顶时的全局时间栏适配 */
+    .status-bar-top .global-status-bar-overlay {
+      height: 44px !important;
+      padding-top: 8px !important;
+    }
+
+    /* 隐藏时间框时也隐藏全局时间栏 */
+    .status-bar-hidden .global-status-bar-overlay {
+      display: none !important;
     }
 
     /* 移动端适配 */
@@ -24226,3 +24332,701 @@ body.message-action-open {
 }
 
 /* ==================== End Chat Settings BaoBaoBook Binding ==================== */
+
+/* ==================== Mmpages (Threads Profile) ==================== */
+
+/* Mmpages Overlay - 覆盖整个手机屏幕 */
+.mmpages-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2100;
+  background-color: var(--bg-primary);
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.28, 0.84, 0.42, 1),
+              opacity 0.35s cubic-bezier(0.28, 0.84, 0.42, 1);
+  will-change: transform, opacity;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 100%;
+  contain: layout style paint;
+}
+
+.mmpages-overlay.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mmpages-container {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Global SVG rounded style for mmpages */
+#mmpagesScreen svg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ========== Top Navbar ========== */
+.mmpages-top-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 92px;
+  padding: 44px 16px 12px;
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-primary);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.mmpages-nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.mmpages-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.mmpages-nav-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.mmpages-nav-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: var(--text-primary);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.mmpages-back-btn svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.2;
+}
+
+/* ========== Profile Section ========== */
+.mmpages-profile-section {
+  padding: 0 16px 20px;
+  flex-shrink: 0;
+}
+
+.mmpages-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.mmpages-profile-info {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.mmpages-display-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.mmpages-username {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.mmpages-bio {
+  font-size: 15px;
+  line-height: 1.35;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.mmpages-bio-note {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.mmpages-followers-count {
+  font-size: 15px;
+  color: var(--text-tertiary);
+}
+
+.mmpages-profile-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #f5e6d3 0%, #e5d5c5 100%);
+}
+
+.mmpages-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ========== Action Buttons ========== */
+.mmpages-action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.mmpages-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  border: none;
+  font-family: inherit;
+}
+
+.mmpages-btn-primary {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  border: 1.5px solid var(--text-primary);
+}
+
+.mmpages-btn-secondary {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-color);
+}
+
+.mmpages-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.mmpages-btn-secondary:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* ========== Tabs ========== */
+.mmpages-tabs-container {
+  position: sticky;
+  top: 92px;
+  background-color: var(--bg-primary);
+  z-index: 99;
+  border-bottom: 0.5px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.mmpages-tabs {
+  display: flex;
+}
+
+.mmpages-tab {
+  flex: 1;
+  padding: 14px 0 13px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  position: relative;
+}
+
+.mmpages-tab.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.mmpages-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--text-primary);
+}
+
+/* ========== Posts ========== */
+.mmpages-posts-container {
+  flex: 1;
+  padding-bottom: 0;
+  min-height: 200px;
+  overflow-y: auto;
+}
+
+.mmpages-post {
+  padding: 14px 16px;
+  border-bottom: 0.5px solid var(--post-separator);
+}
+
+.mmpages-post-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.mmpages-post-avatar-wrapper {
+  position: relative;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.mmpages-post-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5e6d3 0%, #e5d5c5 100%);
+}
+
+.mmpages-post-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mmpages-follow-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 20px;
+  height: 20px;
+  background-color: #0095f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid var(--bg-primary);
+}
+
+.mmpages-follow-badge svg {
+  width: 11px;
+  height: 11px;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.mmpages-post-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mmpages-post-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.mmpages-post-user-time {
+  display: flex;
+  align-items: center;
+}
+
+.mmpages-post-username {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mmpages-post-time {
+  font-size: 15px;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+}
+
+.mmpages-post-more {
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  gap: 3px;
+}
+
+.mmpages-post-more span {
+  width: 4px;
+  height: 4px;
+  background-color: var(--text-secondary);
+  border-radius: 50%;
+}
+
+.mmpages-post-text {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+/* Post images - each image has individual rounded corners */
+.mmpages-post-images {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.mmpages-post-image {
+  flex: 1;
+  aspect-ratio: 0.75;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0ebe6 0%, #e8e3de 100%);
+}
+
+[data-theme='dark'] .mmpages-post-image {
+  background: linear-gradient(135deg, #2a2520 0%, #1f1a16 100%);
+}
+
+.mmpages-post-image-christmas {
+  background: linear-gradient(135deg, #3a2a1f 0%, #2a1f18 100%) !important;
+}
+
+.mmpages-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mmpages-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 10px 4px 0;
+}
+
+.mmpages-action-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--text-primary);
+  stroke-width: 1.6;
+  fill: none;
+}
+
+.mmpages-action-btn.liked svg {
+  fill: #ff3b5c;
+  stroke: #ff3b5c;
+}
+
+.mmpages-action-btn span {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Mmpages Empty State */
+.mmpages-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
+  text-align: center;
+}
+
+.mmpages-empty-state svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--text-tertiary);
+  stroke-width: 1.5;
+  fill: none;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.mmpages-empty-state-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.mmpages-empty-state-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ==================== Mmpages Edit Modal ==================== */
+.mmpages-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mmpages-edit-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mmpages-edit-sheet {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background-color: var(--bg-primary);
+  border-radius: 20px 20px 0 0;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mmpages-edit-overlay.active .mmpages-edit-sheet {
+  transform: translateY(0);
+}
+
+.mmpages-edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 0.5px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.mmpages-edit-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mmpages-edit-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.mmpages-edit-close:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.mmpages-edit-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-primary);
+  stroke-width: 2;
+  fill: none;
+}
+
+.mmpages-edit-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.mmpages-edit-row {
+  padding: 10px 20px;
+  position: relative;
+}
+
+.mmpages-edit-row::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 0.5px;
+  background-color: var(--border-color);
+}
+
+.mmpages-edit-row:last-child::after {
+  display: none;
+}
+
+.mmpages-edit-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mmpages-edit-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mmpages-edit-input {
+  width: 100%;
+  padding: 6px 0;
+  font-size: 15px;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.mmpages-edit-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.mmpages-edit-textarea {
+  width: 100%;
+  padding: 6px 0;
+  font-size: 15px;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.mmpages-edit-textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Name Row with Lock Icon & Avatar */
+.mmpages-edit-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mmpages-edit-lock-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.mmpages-edit-lock-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--text-primary);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.mmpages-edit-name-row .mmpages-edit-input {
+  flex: 1;
+  padding: 4px 0;
+}
+
+.mmpages-edit-avatar-wrapper {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f5e6d3 0%, #e5d5c5 100%);
+  transition: opacity 0.2s;
+}
+
+[data-theme='dark'] .mmpages-edit-avatar-wrapper {
+  background: linear-gradient(135deg, #2a2520 0%, #1f1a16 100%);
+}
+
+.mmpages-edit-avatar-wrapper:hover {
+  opacity: 0.8;
+}
+
+.mmpages-edit-avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Followers Row */
+.mmpages-edit-followers-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mmpages-edit-followers-input {
+  flex: 0 0 70px;
+  padding: 4px 0;
+  text-align: left;
+}
+
+.mmpages-edit-followers-unit {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.mmpages-edit-followers-text {
+  font-size: 15px;
+  color: var(--text-tertiary);
+}
+
+/* Footer */
+.mmpages-edit-footer {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 0.5px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.mmpages-edit-btn {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: inherit;
+}
+
+.mmpages-edit-btn-cancel {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.mmpages-edit-btn-cancel:hover {
+  background-color: var(--bg-secondary);
+}
+
+.mmpages-edit-btn-save {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.mmpages-edit-btn-save:hover {
+  opacity: 0.9;
+}
+
+/* ==================== End Mmpages ==================== */
+
