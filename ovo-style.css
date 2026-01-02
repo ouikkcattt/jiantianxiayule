@@ -1305,6 +1305,11 @@
       height: 100%;
     }
 
+    /* Album组件允许唱片溢出 */
+    .desktop-widget.widget-album {
+      overflow: visible;
+    }
+
     /* 编辑模式下允许删除按钮溢出 */
     .app-grid.edit-mode .desktop-widget {
       overflow: visible;
@@ -2302,44 +2307,67 @@
       height: 16px;
     }
 
-    /* 颜色选择预览 */
+    /* 颜色/效果选择预览 */
     .widget-color-options {
-      display: flex;
-      gap: 16px;
-      padding: 16px 8px;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 12px;
     }
 
     .widget-color-option {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      padding: 8px;
       cursor: pointer;
-      transition: transform 0.2s;
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
     }
 
     .widget-color-option:hover {
-      transform: scale(1.03);
+      transform: translateY(-2px);
+      border-color: var(--border-color);
+      background: var(--bg-tertiary);
     }
 
     .widget-color-preview {
-      width: 140px;
-      height: 65px;
-      border-radius: 14px;
+      width: 100%;
+      aspect-ratio: 2/1;
+      border-radius: 10px;
       overflow: hidden;
-      border: 2px solid var(--border-color);
-      transition: border-color 0.2s;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .widget-color-option:hover .widget-color-preview {
-      border-color: var(--text-primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
     .widget-color-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-secondary);
-      font-weight: 500;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* 分组标题 */
+    .widget-size-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      padding: 12px 16px 8px;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .widget-size-section {
+      margin-bottom: 8px;
     }
 
     /* ========== 尺寸选择器 - INS风格 ========== */
@@ -2423,8 +2451,8 @@
     .widget-size-options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding: 4px 0;
+      gap: 12px;
+      padding: 12px;
     }
 
     /* 尺寸选项卡片 */
@@ -2467,6 +2495,17 @@
 
     .widget-size-option:active {
       transform: translateY(-2px) scale(0.98);
+    }
+
+    /* 选中状态 */
+    .widget-size-option.selected {
+      border-color: var(--text-primary);
+      background: var(--bg-tertiary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .widget-size-option.selected::before {
+      opacity: 1;
     }
 
     /* 尺寸预览框 - 黑白风格 */
@@ -28397,4 +28436,472 @@ body.message-action-open {
 
 /* ==================== End Thread Detail ==================== */
 
+/* ========================================
+ * 📸 图片组件 Photo Widget
+ * 支持 2x2 和 4x2 尺寸
+ * 纯CSS自适应，无需特殊处理
+ * ======================================== */
+
+/* 图片组件容器 - flex column布局 */
+.photo-widget {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 图片内容区域 - flex: 1 自适应 */
+.photo-widget-content {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.photo-widget-content:hover {
+  transform: scale(1.02);
+}
+
+/* 图片元素 - 100%填充 */
+.photo-widget-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* 透明底图片 - contain模式 */
+.photo-widget-image.transparent-mode {
+  object-fit: contain;
+  background:
+    linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.08) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* 效果层 - 伪元素 */
+.photo-widget-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+/* 无效果 */
+.photo-widget-content.effect-none::after {
+  display: none;
+}
+
+/* 磨砂效果 */
+.photo-widget-content.effect-frosted::after {
+  backdrop-filter: blur(0.5px) brightness(1.02);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+}
+
+/* 玻璃效果 */
+.photo-widget-content.effect-glass::after {
+  backdrop-filter: blur(1px) saturate(1.1);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 底部文字标签 - 在图片外面 */
+.photo-widget-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  line-height: 1.2;
+}
+
+/* 隐藏标签 */
+.photo-widget-label.hidden {
+  display: none;
+}
+
+/* 占位符（空组件状态） */
+.photo-widget-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.photo-widget-placeholder svg {
+  width: 28px;
+  height: 28px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.6;
+}
+
+/* ========== End Photo Widget ========== */
+
+/* ========================================
+ * 📸 Polaroid Widget - 4x2
+ * 三张拍立得 + 星星装饰（点击上传）
+ * ======================================== */
+
+.polaroid-widget {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between polaroids, adjusted to fit */
+  padding: 23px 9px; /* Padding for stars to overlap, adjusted to fit 368x176 */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.polaroid-star {
+  position: absolute;
+  width: 50px; /* Adjusted star size to fit smaller cards */
+  height: 50px; /* Adjusted star size */
+  background-color: #555; /* Dark gray color, explicitly background-color */
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  z-index: 1; /* Keep it above polaroids */
+}
+
+.polaroid-star-1 {
+  top: 0px;
+  left: 0px;
+  transform: rotate(-20deg);
+  width: 70px; /* Adjusted size */
+  height: 70px; /* Adjusted size */
+}
+
+.polaroid-star-2 {
+  top: 10px;
+  right: 100px; /* Changed from left to right for better spread */
+  transform: rotate(30deg);
+  width: 50px; /* Default star size */
+  height: 50px; /* Default star size */
+}
+
+.polaroid-star-3 {
+  bottom: 0px;
+  right: 0px;
+  transform: rotate(-10deg);
+  width: 85px; /* Adjusted size */
+  height: 85px; /* Adjusted size */
+}
+
+.polaroid-card {
+  --polaroid-rot: 0deg; /* Keep the variable definition */
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 29.89%; /* Adjusted to scale proportionally to 90px content width */
+  height: 73.86%; /* Adjusted to scale proportionally to 90px image height + padding */
+  background: #fff;
+  border-radius: 2px; /* Match preview's implied radius or small explicit one */
+  padding: 10px 10px 30px 10px; /* Thicker bottom border, proportional to preview */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow, consistent with preview */
+  box-sizing: content-box; /* Ensures padding adds to total size, consistent with preview */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  z-index: 0;/* Keep it above stars as per current implementation, and preview's card default */
+  transform: rotate(var(--polaroid-rot)) translateZ(0); /* Dynamic rotation, consistent variable */
+  transition: transform 0.2s ease-in-out; /* Keep the transition */
+}
+
+.polaroid-card.p-1 { --polaroid-rot: -5deg; }
+.polaroid-card.p-2 { --polaroid-rot: 5deg; }
+.polaroid-card.p-3 { --polaroid-rot: -3deg; }
+
+.polaroid-card:active {
+  transform: rotate(var(--polaroid-rot)) scale(0.985) translateZ(0);
+}
+
+.polaroid-frame {
+  width: 100%;
+  height: 90px; /* Square image area, adjusted to fit */
+  flex: 1; /* Keep flex property */
+  overflow: hidden;
+  background-color: #000; /* Dark background, explicitly background-color */
+  position: relative;
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.polaroid-img.img-1 { object-position: 20% 20%; }
+.polaroid-img.img-2 { object-position: 50% 50%; }
+.polaroid-img.img-3 { object-position: 80% 80%; }
+
+.polaroid-upload-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.16s ease;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.polaroid-upload-hint svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (hover: hover) {
+  .polaroid-card:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+  }
+  .polaroid-card:hover .polaroid-upload-hint {
+    opacity: 1;
+  }
+}
+
+.polaroid-card.is-empty .polaroid-upload-hint {
+  opacity: 1;
+}
+
+.polaroid-caption {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1;
+  height: 12px;
+}
+
+/* ========== End Polaroid Widget ========== */
+
+/* ========================================
+ * 💿 Album Widget - 响应式布局
+ * 封套居中，唱片贴右边缘并向右露出一半
+ * ======================================== */
+
+.album-widget {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: visible;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.album-widget-sleeve {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 1;
+  z-index: 2;
+  padding: 7.14%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.album-widget-sleeve-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  filter: blur(3px);
+}
+
+.album-widget-pause-icon {
+  width: 11%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: 11%;
+}
+
+.album-widget-pause-icon::before,
+.album-widget-pause-icon::after {
+  content: '';
+  width: 22%;
+  height: 85%;
+  background: white;
+  border-radius: 2px;
+}
+
+.album-widget-lyrics {
+  margin-top: auto;
+  width: 100%;
+  cursor: pointer;
+}
+
+.album-widget-lyrics p {
+  color: white;
+  font-size: clamp(16px, 10%, 28px);
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+  padding-left: 2%;
+}
+
+.album-widget-lyrics p.last-line .faded-text {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.album-widget-record {
+  position: absolute;
+  height: 89.3%;
+  aspect-ratio: 1;
+  background-color: #1a1a1a;
+  border-radius: 50%;
+  left: 40%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-image: radial-gradient(circle at 50% 50%, #333 0%, #333 1%, #1a1a1a 2%, #1a1a1a 3%, #333 4%, #333 5%, #1a1a1a 6%, #1a1a1a 7%, #333 8%, #333 9%, #1a1a1a 10%, #1a1a1a 11%, #333 12%, #333 13%, #1a1a1a 14%, #1a1a1a 15%, #333 16%, #333 17%, #1a1a1a 18%, #1a1a1a 19%, #333 20%, #333 21%, #1a1a1a 22%, #1a1a1a 23%, #333 24%, #333 25%, #1a1a1a 26%, #1a1a1a 27%, #333 28%, #333 29%, #1a1a1a 30%, #1a1a1a 31%, #333 32%, #333 33%, #1a1a1a 34%, #1a1a1a 35%, #333 36%, #333 37%, #1a1a1a 38%, #1a1a1a 39%, #333 40%, #333 41%, #1a1a1a 42%, #1a1a1a 43%, #333 44%, #333 45%, #1a1a1a 46%, #1a1a1a 47%, #333 48%, #333 49%, #1a1a1a 50%, transparent 51%);
+}
+
+.album-widget-record-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.album-widget-record-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(2.2) translateY(-10%);
+  filter: grayscale(100%) brightness(0.8) contrast(1.2);
+}
+
+/* 歌词编辑器（仅用于该组件的 JS 编辑） */
+.album-widget-lyrics-editor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  z-index: 20;
+  border-radius: 14px;
+  background: rgba(15, 15, 15, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.album-widget-lyrics-textarea {
+  width: 100%;
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.35;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+}
+
+.album-widget-lyrics-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.album-widget-lyrics-btn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.album-widget-lyrics-btn.save {
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* ========== End Album Widget ========== */
 
