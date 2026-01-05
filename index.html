@@ -1192,6 +1192,18 @@
               </div>
               <div class="chat-menu-item-label">重回</div>
             </div>
+            <div class="chat-menu-item" onclick="openThemeEditor()">
+              <div class="chat-menu-item-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.82-.13 2.68-.37" stroke-linecap="round" />
+                  <path d="M12 2c-1.66 0-3 4.48-3 10s1.34 10 3 10" stroke-linecap="round" />
+                  <path d="M2 12h10" stroke-linecap="round" />
+                  <circle cx="18" cy="18" r="4" />
+                  <path d="M18 16v4M16 18h4" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="chat-menu-item-label">主题</div>
+            </div>
           </div>
 
           <!-- Hidden File Input for Image Upload -->
@@ -1523,6 +1535,362 @@
             </div>
           </div>
           <!-- ========== End Custom Reaction Manager Modal ========== -->
+
+          <!-- ========== Theme Editor 详情页主题编辑器 ========== -->
+          <div class="theme-editor-overlay" id="themeEditorOverlay">
+            <!-- 顶部操作栏 -->
+            <div class="theme-editor-topbar">
+              <div class="theme-editor-topbar-btn cancel" onclick="closeThemeEditor(false)">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>取消</span>
+              </div>
+              <div class="theme-editor-topbar-title">详情页主题</div>
+              <div class="theme-editor-topbar-btn save" onclick="closeThemeEditor(true)">
+                <svg viewBox="0 0 24 24">
+                  <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>保存</span>
+              </div>
+            </div>
+
+            <!-- 中间预览区（聊天详情页会被CSS缩放到这里显示） -->
+            <div class="theme-editor-preview-area">
+              <!-- 预览内容由JS动态插入 -->
+            </div>
+
+            <!-- 底部编辑面板 -->
+            <div class="theme-editor-panel">
+              <!-- 标签页切换 -->
+              <div class="theme-editor-tabs">
+                <div class="theme-editor-tab active" data-tab="header" onclick="switchThemeEditorTab('header')">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="6" rx="2" />
+                    <path d="M3 12h18M3 18h18" stroke-linecap="round" opacity="0.3" />
+                  </svg>
+                  <span>顶栏</span>
+                </div>
+                <div class="theme-editor-tab" data-tab="input" onclick="switchThemeEditorTab('input')">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18M3 12h18" stroke-linecap="round" opacity="0.3" />
+                    <rect x="3" y="15" width="18" height="6" rx="2" />
+                  </svg>
+                  <span>底栏</span>
+                </div>
+                <div class="theme-editor-tab" data-tab="bubble" onclick="switchThemeEditorTab('bubble')">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke-linecap="round" />
+                  </svg>
+                  <span>气泡</span>
+                </div>
+              </div>
+
+              <!-- 编辑内容区 -->
+              <div class="theme-editor-content">
+                <!-- 主题开关 -->
+                <div class="theme-editor-toggle-row">
+                  <div class="theme-editor-toggle-info">
+                    <span class="theme-editor-toggle-label">启用自定义主题</span>
+                    <span class="theme-editor-toggle-hint">开启后将覆盖默认样式</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="themeEditorEnabled" onchange="onThemeEditorToggleChange()">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <!-- 主题选择区（预设主题列表） -->
+                <div class="theme-editor-section" id="themeEditorPresetSection">
+                  <div class="theme-editor-section-header">
+                    <span>预设主题</span>
+                    <div class="theme-editor-section-actions">
+                      <button class="theme-editor-action-btn" onclick="openThemeImportModal()" title="导入主题">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                      <button class="theme-editor-action-btn" onclick="createNewTheme()" title="新建主题">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="theme-editor-preset-list" id="themeEditorPresetList">
+                    <!-- 动态渲染主题列表 -->
+                    <div class="theme-editor-preset-empty">
+                      <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4M12 16h.01" stroke-linecap="round" />
+                      </svg>
+                      <span>暂无预设主题</span>
+                      <span class="theme-editor-preset-empty-hint">点击右上角"+"创建新主题</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CSS编辑区 -->
+                <div class="theme-editor-section">
+                  <div class="theme-editor-section-header">
+                    <span>自定义CSS</span>
+                    <div class="theme-editor-section-actions">
+                      <button class="theme-editor-action-btn" onclick="openThemeGuideDrawer()" title="使用教程">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round" />
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke-linecap="round" />
+                          <path d="M12 6v7m0 0l-3-3m3 3l3-3" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                      <button class="theme-editor-action-btn" onclick="savePresetCSS()" title="保存到预设">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke-linecap="round" />
+                          <path d="M17 21v-8H7v8M7 3v5h8" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                      <button class="theme-editor-action-btn" onclick="clearCurrentPresetCSS()" title="清空CSS">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke-linecap="round" />
+                          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke-linecap="round" />
+                          <path d="M10 11v6M14 11v6" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="theme-editor-css-hint">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
+                    </svg>
+                    <span>选择器会自动添加 #chatDetailScreen 前缀</span>
+                  </div>
+                  <textarea class="theme-editor-css-textarea" id="themeEditorCSSTextarea" placeholder="/* 在此输入CSS代码 */&#10;.chat-detail-header {&#10;  background: linear-gradient(135deg, #667eea, #764ba2);&#10;}" spellcheck="false" oninput="onThemeCSSInput()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ========== End Theme Editor ========== -->
+
+          <!-- ========== Theme Guide Drawer 主题教程抽屉 ========== -->
+          <div class="tgd-overlay" id="themeGuideDrawer" onclick="closeThemeGuideDrawer()">
+            <div class="tgd-sheet" onclick="event.stopPropagation()">
+              <div class="tgd-handle"></div>
+              <div class="tgd-header">
+                <div class="tgd-title">气泡主题教程</div>
+                <div class="tgd-header-actions">
+                  <div class="tgd-page-indicator">
+                    <span class="tgd-page-dot active" data-page="0"></span>
+                    <span class="tgd-page-dot" data-page="1"></span>
+                  </div>
+                  <div class="tgd-close-btn" onclick="closeThemeGuideDrawer()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="tgd-content">
+                <!-- 第一页：使用指南 -->
+                <div class="tgd-page active" data-page="0">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    使用指南
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      快速开始
+                    </div>
+                    <div class="tgd-text">
+                      <strong>1.</strong> 点击「插入模板」获取15章完整示例代码<br>
+                      <strong>2.</strong> 删除示例代码的 <code>/*</code> 和 <code>*/</code> 启用样式<br>
+                      <strong>3.</strong> 修改变量或颜色值，实时预览效果<br>
+                      <strong>4.</strong> 点击「新建预设」保存你的主题
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      可用变量（12个）
+                    </div>
+                    <div class="tgd-var-table">
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_BG}}</span>
+                        <span class="tgd-var-desc">用户气泡背景色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_TEXT}}</span>
+                        <span class="tgd-var-desc">用户气泡文字颜色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_BORDER}}</span>
+                        <span class="tgd-var-desc">用户气泡边框颜色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_AVATAR}}</span>
+                        <span class="tgd-var-desc">用户头像（Base64/URL）</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_BG}}</span>
+                        <span class="tgd-var-desc">角色气泡背景色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_TEXT}}</span>
+                        <span class="tgd-var-desc">角色气泡文字颜色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_BORDER}}</span>
+                        <span class="tgd-var-desc">角色气泡边框颜色</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_AVATAR}}</span>
+                        <span class="tgd-var-desc">角色头像（Base64/URL）</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{FONT_SIZE}}</span>
+                        <span class="tgd-var-desc">字体大小</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{PADDING}}</span>
+                        <span class="tgd-var-desc">内边距</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{MAX_WIDTH}}</span>
+                        <span class="tgd-var-desc">最大宽度</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{BORDER_RADIUS}}</span>
+                        <span class="tgd-var-desc">圆角大小</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                      常用选择器
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px; line-height: 1.6;">
+                      <code>.chat-message-group</code> 消息组容器<br>
+                      <code>.chat-message-bubble</code> 气泡本体<br>
+                      <code>.chat-message-timestamp</code> 时间戳<br>
+                      <code>.chat-read-status</code> 已读状态<br>
+                      <code>.chat-date-divider</code> 日期分隔线<br>
+                      <code>.text-image-overlay</code> 文字图覆盖层
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      必读注意
+                    </div>
+                    <div class="tgd-text">
+                      • 所有样式<strong>必须</strong>加 <code>!important</code><br>
+                      • 用 <code>.user</code> / <code>.character</code> 区分双方<br>
+                      • 头像布局需配合 <code>flex-wrap: wrap</code><br>
+                      • 间距调整：<code>margin-bottom: 2px~16px</code>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第二页：AI生成提示词 -->
+                <div class="tgd-page" data-page="1">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="3"/><path d="M12 8v3"/></svg>
+                    AI 生成提示词
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                      通用模板
+                    </div>
+                    <div class="tgd-text" style="margin-bottom: 10px;">
+                      复制下面的提示词发给 AI，描述你想要的风格即可生成主题代码！
+                    </div>
+                    <div class="tgd-prompt-box" id="tgdPromptContent">请帮我设计一个 <strong>[描述风格]</strong> 的聊天气泡CSS主题。
+
+<strong>变量（必须使用）：</strong>
+颜色：{{USER_BG}}, {{USER_TEXT}}, {{CHAR_BG}}, {{CHAR_TEXT}}
+头像：{{USER_AVATAR}}, {{CHAR_AVATAR}}
+尺寸：{{FONT_SIZE}}, {{PADDING}}, {{MAX_WIDTH}}
+
+<strong>选择器：</strong>
+.chat-message-group.user / .character
+.chat-message-bubble（气泡）
+.chat-message-timestamp（时间戳）
+.chat-message-group（间距用margin-bottom）
+
+<strong>要求：</strong>所有样式加 !important
+<strong>额外：</strong><em>[头像布局/时间戳位置/间距大小等]</em></div>
+                    <button class="tgd-copy-btn" onclick="copyThemePrompt()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                      </svg>
+                      复制提示词
+                    </button>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2"/><circle cx="6" cy="18" r="3"/><path d="M9.5 10.5L6 15M13 9l3.5 6"/></svg>
+                      高级功能示例
+                    </div>
+                    <div class="tgd-text">
+                      <strong>左右头像布局：</strong><br>
+                      "用户头像在右侧，角色头像在左侧，用::before伪元素添加头像，需要flex-wrap:wrap配合"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>隐藏时间戳：</strong><br>
+                      ".chat-message-timestamp { display: none }"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>紧凑间距：</strong><br>
+                      ".chat-message-group { margin-bottom: 2px }"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>文字图覆盖层：</strong><br>
+                      ".text-image-overlay { background: none; backdrop-filter: none }"
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      常见问题
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>Q: 时间戳跑到气泡旁边？</strong><br>
+                      A: 给.chat-message-group加flex-wrap:wrap，时间戳加width:100%和order:999<br><br>
+                      <strong>Q: 覆盖不了原有样式？</strong><br>
+                      A: 确保加了!important，文字图需同时设置background和backdrop-filter
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 底部翻页按钮 -->
+              <div class="tgd-footer">
+                <button class="tgd-nav-btn" id="tgdPrevBtn" onclick="switchThemeGuidePage(-1)" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  上一页
+                </button>
+                <button class="tgd-nav-btn" id="tgdNextBtn" onclick="switchThemeGuidePage(1)">
+                  下一页
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- ========== End Theme Guide Drawer ========== -->
 
         </div>
 
@@ -1977,87 +2345,8 @@
                   </div>
                 </div>
 
-                <!-- 💅 气泡样式选择 -->
-                <div class="theme-control-group">
-                  <label class="theme-label">
-                    <span class="theme-label-text">气泡样式</span>
-                  </label>
-                  <div class="theme-style-selector">
-                    <div class="theme-style-option" data-style="default" onclick="selectBubbleStyle('default')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">默认样式</div>
-                        <div class="theme-style-desc">简约圆角矩形</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble default"></div>
-                      </div>
-                    </div>
-                    <div class="theme-style-option" data-style="imessage" onclick="selectBubbleStyle('imessage')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">iMessage</div>
-                        <div class="theme-style-desc">Apple风格尖角</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble imessage"></div>
-                      </div>
-                    </div>
-                    <div class="theme-style-option" data-style="discord" onclick="selectBubbleStyle('discord')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">Discord</div>
-                        <div class="theme-style-desc">紫色渐变圆润</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble discord"></div>
-                      </div>
-                    </div>
-                    <div class="theme-style-option" data-style="cute-v1" onclick="selectBubbleStyle('cute-v1')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">Cute v1</div>
-                        <div class="theme-style-desc">侧边小三角</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble cute-v1"></div>
-                      </div>
-                    </div>
-                    <div class="theme-style-option" data-style="cute-v2" onclick="selectBubbleStyle('cute-v2')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">Cute v2</div>
-                        <div class="theme-style-desc">上方尖三角</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble cute-v2"></div>
-                      </div>
-                    </div>
-                    <div class="theme-style-option" data-style="tooltip" onclick="selectBubbleStyle('tooltip')">
-                      <div class="theme-style-radio">
-                        <div class="theme-style-radio-dot"></div>
-                      </div>
-                      <div class="theme-style-info">
-                        <div class="theme-style-name">Tooltip</div>
-                        <div class="theme-style-desc">底部三角+头像</div>
-                      </div>
-                      <div class="theme-style-preview">
-                        <div class="style-preview-bubble tooltip"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <input type="hidden" id="chatThemeBubbleStyle" value="default" />
-                </div>
+                <!-- 气泡样式已迁移到主题编辑器，保留hidden input供兼容 -->
+                <input type="hidden" id="chatThemeBubbleStyle" value="default" />
 
                 <!-- 气泡大小调整 -->
                 <div class="theme-control-group">
@@ -2066,7 +2355,7 @@
                     <span class="theme-label-value" id="chatThemeBubbleSizeValue">1.0</span>
                   </label>
                   <div class="theme-slider-container">
-                    <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.8" max="1.2" step="0.1" value="1.0" oninput="updateBubbleSizeValue(this.value); applyThemePreview();" />
+                    <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.8" max="1.2" step="0.1" value="1.0" oninput="updateBubbleSizeValue(this.value); applyChatSettingsThemePreview();" />
                     <div class="theme-slider-track"></div>
                     <div class="theme-slider-labels">
                       <span>紧凑</span>
@@ -2089,21 +2378,21 @@
                     <div class="theme-color-item">
                       <label class="theme-color-label">边框</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserBorder" value="#e0e0e0" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeUserBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
                     <div class="theme-color-item">
                       <label class="theme-color-label">背景</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserBackground" value="#ffffff" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeUserBackground" value="#ffffff" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
                     <div class="theme-color-item">
                       <label class="theme-color-label">文字</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserText" value="#000000" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeUserText" value="#000000" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
@@ -2123,21 +2412,21 @@
                     <div class="theme-color-item">
                       <label class="theme-color-label">边框</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterBorder" value="#e0e0e0" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeCharacterBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
                     <div class="theme-color-item">
                       <label class="theme-color-label">背景</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterBackground" value="#f5f5f5" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeCharacterBackground" value="#f5f5f5" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
                     <div class="theme-color-item">
                       <label class="theme-color-label">文字</label>
                       <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterText" value="#000000" oninput="applyThemePreview();" />
+                        <input type="color" class="theme-color-input" id="chatThemeCharacterText" value="#000000" oninput="applyChatSettingsThemePreview();" />
                         <div class="theme-color-preview"></div>
                       </div>
                     </div>
@@ -5768,6 +6057,94 @@
                 </svg>
                 <span>可以分别设置手机框、刘海屏和灵动岛的颜色</span>
               </div>
+            </div>
+          </div>
+
+          <!-- 底栏切换区域 -->
+          <div class="typography-section">
+            <div class="typography-section-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
+                <rect x="3" y="16" width="18" height="5" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="7" cy="18.5" r="1" fill="currentColor"/>
+                <circle cx="12" cy="18.5" r="1" fill="currentColor"/>
+                <circle cx="17" cy="18.5" r="1" fill="currentColor"/>
+              </svg>
+              <span>底栏切换</span>
+            </div>
+
+            <!-- 底栏样式标签 -->
+            <div class="font-section-label">底栏样式</div>
+
+            <!-- 底栏样式横向滚动 -->
+            <div class="dock-styles-scroll" id="dockStylesScroll">
+              <!-- 默认样式 -->
+              <div class="dock-style-card active" data-style="default" onclick="selectDockStyle('default')">
+                <div class="dock-style-preview">
+                  <div class="dock-preview-bg dock-preview-default">
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                  </div>
+                </div>
+                <div class="dock-style-label">
+                  <div class="dock-style-name">默认</div>
+                  <div class="dock-style-desc">纯色背景</div>
+                </div>
+                <div class="dock-style-checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- 磨砂质地 -->
+              <div class="dock-style-card" data-style="frosted" onclick="selectDockStyle('frosted')">
+                <div class="dock-style-preview">
+                  <div class="dock-preview-bg dock-preview-frosted">
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                  </div>
+                </div>
+                <div class="dock-style-label">
+                  <div class="dock-style-name">磨砂</div>
+                  <div class="dock-style-desc">毛玻璃效果</div>
+                </div>
+                <div class="dock-style-checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- 液态轻模糊 -->
+              <div class="dock-style-card" data-style="liquid" onclick="selectDockStyle('liquid')">
+                <div class="dock-style-preview">
+                  <div class="dock-preview-bg dock-preview-liquid">
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                    <div class="dock-preview-icon"></div>
+                  </div>
+                </div>
+                <div class="dock-style-label">
+                  <div class="dock-style-name">液态</div>
+                  <div class="dock-style-desc">轻透模糊</div>
+                </div>
+                <div class="dock-style-checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- 提示信息 -->
+            <div class="custom-font-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px; margin-right: 6px; opacity: 0.4;">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01" stroke-linecap="round"/>
+              </svg>
+              <span>切换主屏幕底部Dock栏的视觉效果，设置会自动保存</span>
             </div>
           </div>
 
