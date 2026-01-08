@@ -10245,18 +10245,53 @@
 
     /* Chat Detail Header */
     .chat-detail-header {
-      /* 🔥 移除固定高度，让它自适应内容 */
-      min-height: 86px;
-      /* 🔥 使用全局App Header padding变量 */
-      padding: var(--app-header-total-padding) 20px 12px;
+      /* 🔥 顶栏固定定位，不再受内容流影响 */
+      position: fixed !important; /* 使用 fixed 定位 */
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1000 !important; /* 确保在最上层 */
+      /* 保持原有背景和边框 */
       background: var(--bg-primary);
       border-bottom: 1px solid var(--border-color);
+      /* 内部元素仍然使用 flex 布局 */
       display: flex;
       align-items: center;
       gap: 12px;
+      /* 移除 min-height 和 flex-shrink，让高度自适应内容 */
+      min-height: auto; /* 让高度根据内容自适应 */
+      height: auto; /* 确保高度自适应 */
+      /* 保持原有 padding，但需要考虑安全区域 */
+      padding: var(--app-header-total-padding) 20px 12px;
+    }
+
+    /* 🎨 主题装饰层 - 提供额外的DOM元素用于复杂主题设计 */
+    .theme-decor-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none; /* 不阻挡点击事件 */
+      z-index: 0; /* 在内容层之下 */
+      overflow: hidden;
+    }
+
+    .theme-decor {
+      position: absolute;
+      display: none; /* 默认隐藏，主题CSS可以激活 */
+      pointer-events: none;
+    }
+
+    /* 确保内容层在装饰层之上 */
+    .chat-detail-header > *:not(.theme-decor-layer) {
       position: relative;
-      z-index: 100;
-      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .chat-input-area > *:not(.theme-decor-layer) {
+      position: relative;
+      z-index: 1;
     }
 
     .chat-detail-back-btn {
@@ -10379,9 +10414,17 @@
     /* Messages Area */
     /* Chat Messages Area - 确保背景完全覆盖无缝隙 */
     .chat-messages-area {
-      flex: 1;
+      /* 🔥 消息区域绝对定位，占据头部和底部之间的空间 */
+      position: absolute !important;
+      top: var(--chat-header-height, 0px) !important;    /* 头部高度 */
+      bottom: var(--chat-input-height, 0px) !important;  /* 底部高度 */
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 50 !important; /* 在头部和底部之下 */
+
+      /* 保持滚动和Flex布局 */
       overflow-y: auto;
-      padding: 16px;
+      padding: 16px; /* 内部padding，与 fixed header/input 留出的空间无关 */
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -10995,15 +11038,24 @@
 
     /* Chat Input Area - 添加底部安全区域支持 */
     .chat-input-area {
+      /* 🔥 底部固定定位，不再受内容流影响 */
+      position: fixed !important; /* 使用 fixed 定位 */
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1000 !important; /* 确保在最上层 */
+      /* 保持原有背景和边框 */
       padding: 12px 16px;
-      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0));
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0)); /* 继续支持底部安全区域 */
       background: var(--bg-primary);
       border-top: 1px solid var(--border-color);
+      /* 内部元素仍然使用 flex 布局 */
       display: flex;
       align-items: flex-end;
       gap: 10px;
-      position: relative;
-      flex-shrink: 0;
+      /* 移除 position: relative; 和 flex-shrink; */
+      /* position: relative; 可能会影响 fixed 元素的 z-index */
+      /* flex-shrink: 0; 对于 fixed 元素无意义 */
     }
 
     /* 键盘弹起时的固定定位模式（备用方案） */
@@ -11071,7 +11123,7 @@
       flex-direction: column;
       gap: 4px;
       animation: menuSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 9;
+      z-index: 9999999;
     }
 
     .chat-attachment-menu.active {
@@ -31444,7 +31496,8 @@ body.message-action-open {
   transform: scale(1);
   transform-origin: center center;
   border-radius: 20px;
-  overflow: hidden;
+  overflow-y: auto;  /* 允许垂直滚动查看完整顶栏 */
+  overflow-x: hidden;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.1),
     0 4px 20px rgba(0, 0, 0, 0.15);
@@ -31454,11 +31507,26 @@ body.message-action-open {
   pointer-events: auto;
 }
 
+/* 隐藏滚动条但保留滚动功能 */
+.theme-preview-wrapper::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+.theme-preview-wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* wrapper内的元素恢复正常显示 */
 .theme-preview-wrapper .chat-detail-header {
   display: flex !important;
   flex-shrink: 0;
-  position: relative;
+  position: relative !important;
+  /* 覆盖原始的 fixed 定位 */
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
 }
 
 .theme-preview-wrapper .chat-messages-area {
@@ -31466,12 +31534,23 @@ body.message-action-open {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative !important;
+  /* 覆盖原始的 absolute 定位 */
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
 }
 
 .theme-preview-wrapper .chat-input-area {
   display: flex !important;
   flex-shrink: 0;
-  position: relative;
+  position: relative !important;
+  /* 覆盖原始的 fixed 定位 */
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
 }
 
 /* 编辑模式下隐藏不需要的弹层 */

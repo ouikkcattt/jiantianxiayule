@@ -1045,6 +1045,15 @@
         <div class="chat-detail-screen" id="chatDetailScreen">
           <!-- Chat Detail Header -->
           <div class="chat-detail-header">
+            <!-- 🎨 主题装饰层 - 提供额外的DOM元素用于复杂主题设计 -->
+            <div class="theme-decor-layer">
+              <div class="theme-decor theme-decor-1"></div>
+              <div class="theme-decor theme-decor-2"></div>
+              <div class="theme-decor theme-decor-3"></div>
+              <div class="theme-decor theme-decor-4"></div>
+              <div class="theme-decor theme-decor-5"></div>
+            </div>
+
             <div class="chat-detail-back-btn" onclick="closeChatDetail()">
               <svg viewBox="0 0 24 24">
                 <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
@@ -1406,6 +1415,15 @@
 
           <!-- Chat Input Area -->
           <div class="chat-input-area">
+            <!-- 🎨 主题装饰层 - 提供额外的DOM元素用于复杂主题设计 -->
+            <div class="theme-decor-layer">
+              <div class="theme-decor theme-decor-1"></div>
+              <div class="theme-decor theme-decor-2"></div>
+              <div class="theme-decor theme-decor-3"></div>
+              <div class="theme-decor theme-decor-4"></div>
+              <div class="theme-decor theme-decor-5"></div>
+            </div>
+
             <!-- Attachment Button -->
             <div class="chat-attach-btn" id="chatAttachBtn" onclick="toggleChatAttachmentMenu()">
               <svg viewBox="0 0 24 24">
@@ -1564,7 +1582,15 @@
             <div class="theme-editor-panel">
               <!-- 标签页切换 -->
               <div class="theme-editor-tabs">
-                <div class="theme-editor-tab active" data-tab="header" onclick="switchThemeEditorTab('header')">
+                <div class="theme-editor-tab active" data-tab="overall" onclick="switchThemeEditorTab('overall')">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" fill="none" />
+                    <rect x="3" y="3" width="18" height="5" rx="2" fill="currentColor" opacity="0.2" />
+                    <rect x="3" y="16" width="18" height="5" rx="2" fill="currentColor" opacity="0.2" />
+                  </svg>
+                  <span>整体</span>
+                </div>
+                <div class="theme-editor-tab" data-tab="header" onclick="switchThemeEditorTab('header')">
                   <svg viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="6" rx="2" />
                     <path d="M3 12h18M3 18h18" stroke-linecap="round" opacity="0.3" />
@@ -1642,13 +1668,13 @@
                           <path d="M12 6v7m0 0l-3-3m3 3l3-3" stroke-linecap="round" />
                         </svg>
                       </button>
-                      <button class="theme-editor-action-btn" onclick="savePresetCSS()" title="保存到预设">
+                      <button class="theme-editor-action-btn" onclick="savePresetCSS()" title="保存CSS和HTML到预设">
                         <svg viewBox="0 0 24 24">
                           <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke-linecap="round" />
                           <path d="M17 21v-8H7v8M7 3v5h8" stroke-linecap="round" />
                         </svg>
                       </button>
-                      <button class="theme-editor-action-btn" onclick="clearCurrentPresetCSS()" title="清空CSS">
+                      <button class="theme-editor-action-btn" onclick="clearCurrentPresetCSS()" title="清空CSS和HTML">
                         <svg viewBox="0 0 24 24">
                           <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke-linecap="round" />
                           <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke-linecap="round" />
@@ -1666,6 +1692,54 @@
                   </div>
                   <textarea class="theme-editor-css-textarea" id="themeEditorCSSTextarea" placeholder="/* 在此输入CSS代码 */&#10;.chat-detail-header {&#10;  background: linear-gradient(135deg, #667eea, #764ba2);&#10;}" spellcheck="false" oninput="onThemeCSSInput()"></textarea>
                 </div>
+
+                <!-- HTML编辑区 -->
+                <div class="theme-editor-section" id="singleHTMLSection">
+                  <div class="theme-editor-section-header">
+                    <span>自定义HTML装饰</span>
+                    <div class="theme-editor-section-actions">
+                      <button class="theme-editor-action-btn" onclick="insertHTMLTemplate()" title="插入模板">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                      <button class="theme-editor-action-btn" onclick="clearHTMLTextarea()" title="清空HTML">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke-linecap="round" />
+                          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke-linecap="round" />
+                          <path d="M10 11v6M14 11v6" stroke-linecap="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="theme-editor-css-hint">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
+                    </svg>
+                    <span>添加额外的装饰元素，解决伪元素不够的问题</span>
+                  </div>
+                  <textarea class="theme-editor-css-textarea" id="themeEditorHTMLTextarea" placeholder="<!-- 在此输入HTML代码 -->&#10;<div class=&quot;custom-stars&quot;>&#10;  <div class=&quot;star star-1&quot;></div>&#10;  <div class=&quot;star star-2&quot;></div>&#10;</div>" spellcheck="false" oninput="onThemeHTMLInput()"></textarea>
+                </div>
+
+                <!-- 整体标签页专用：三个HTML输入区 -->
+                <div class="theme-editor-section theme-overall-html-section" id="overallHTMLSection" style="display:none;">
+                  <div class="theme-editor-section-header">
+                    <span>顶栏HTML</span>
+                  </div>
+                  <textarea class="theme-editor-css-textarea" id="overallHeaderHTMLTextarea" placeholder="<!-- 顶栏装饰HTML -->" spellcheck="false" oninput="onOverallHTMLInput('header')"></textarea>
+
+                  <div class="theme-editor-section-header" style="margin-top:12px;">
+                    <span>底栏HTML</span>
+                  </div>
+                  <textarea class="theme-editor-css-textarea" id="overallInputHTMLTextarea" placeholder="<!-- 底栏装饰HTML -->" spellcheck="false" oninput="onOverallHTMLInput('input')"></textarea>
+
+                  <div class="theme-editor-section-header" style="margin-top:12px;">
+                    <span>气泡区HTML</span>
+                  </div>
+                  <textarea class="theme-editor-css-textarea" id="overallBubbleHTMLTextarea" placeholder="<!-- 气泡区装饰HTML -->" spellcheck="false" oninput="onOverallHTMLInput('bubble')"></textarea>
+                </div>
+
               </div>
             </div>
           </div>
@@ -1690,6 +1764,118 @@
                 </div>
               </div>
               <div class="tgd-content">
+                <!-- ========== 整体主题教程 ========== -->
+                <div class="tgd-overall-guide" style="display: none;">
+                <!-- 第一页：整体使用指南 -->
+                <div class="tgd-page active" data-page="0">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    使用指南
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      什么是整体主题
+                    </div>
+                    <div class="tgd-text">
+                      整体主题用于完全替换整个聊天详情页面的CSS样式，实现统一的视觉效果。与分组主题（顶栏、底栏、气泡）不同，整体主题的CSS作用于整个页面。
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      优先级规则
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>整体主题优先级最高</strong><br>
+                      整体主题 > 分组主题（顶栏/底栏/气泡）<br><br>
+                      启用整体主题后，分组主题仍会生效，但可能被整体主题的样式覆盖。
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18M9 21V9"/></svg>
+                      目标选择器
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px; line-height: 1.6;">
+                      <code>#chatDetailScreen</code> 聊天详情页容器<br>
+                      <code>.chat-detail-header</code> 顶栏区域<br>
+                      <code>.chat-messages-area</code> 消息区域<br>
+                      <code>.chat-input-area</code> 底栏区域<br>
+                      <code>.chat-message-bubble</code> 消息气泡<br>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      可用变量
+                    </div>
+                    <div class="tgd-text" style="margin-top: 8px; color: #888; font-size: 11px;">
+                      整体主题支持所有变量：<br>
+                      颜色、头像、尺寸等，与其他主题类型相同
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第二页：常见问题 -->
+                <div class="tgd-page" data-page="1">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                    常见问题
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q1: 整体主题和分组主题冲突？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>整体主题和分组主题同时启用时，样式可能重叠。<br><br>
+                      <strong>解决：</strong>使用 <code>!important</code> 提高整体主题的优先级，或禁用分组主题。
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q2: 如何实现整页背景？
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+#chatDetailScreen {<br>
+&nbsp;&nbsp;background: linear-gradient(180deg, #667eea, #764ba2) !important;<br>
+&nbsp;&nbsp;background-size: cover !important;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q3: 整体主题适合什么场景？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>适合：</strong>需要统一风格、整页背景、全局色调<br>
+                      <strong>不适合：</strong>只想修改某个区域（建议用分组主题）
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q4: 整体主题能用HTML注入吗？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>可以！</strong>整体主题支持HTML自定义装饰，会注入到 <code>#chatDetailScreen</code> 容器内。
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <!-- ========== End 整体主题教程 ========== -->
+
+                <!-- ========== 气泡主题教程 ========== -->
+                <div class="tgd-bubble-guide">
                 <!-- 第一页：使用指南 -->
                 <div class="tgd-page active" data-page="0">
                   <div class="tgd-page-title">
@@ -1871,6 +2057,550 @@
                     </div>
                   </div>
                 </div>
+                </div>
+                <!-- ========== End 气泡主题教程 ========== -->
+
+                <!-- ========== 顶栏主题教程 ========== -->
+                <div class="tgd-header-guide" style="display: none;">
+                <!-- 第一页：顶栏使用指南 -->
+                <div class="tgd-page active" data-page="0">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    使用指南
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      快速开始
+                    </div>
+                    <div class="tgd-text">
+                      <strong>1.</strong> CSS控制布局和样式，HTML注入自定义内容<br>
+                      <strong>2.</strong> 使用绝对定位重新排列原始按钮位置<br>
+                      <strong>3.</strong> 用伪元素(::before)替换图标样式<br>
+                      <strong>4.</strong> 点击「新建预设」保存你的主题
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      顶部边距适配
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      自定义HTML必须使用全局顶部padding变量，确保适配刘海屏/灵动岛：
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+padding-top: var(--app-header-total-padding, 20px);<br>
+/* 或 */<br>
+top: var(--app-header-total-padding, 20px);
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      可用变量（5个）
+                    </div>
+                    <div class="tgd-var-table">
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_NAME}}</span>
+                        <span class="tgd-var-desc">角色名称（优先显示备注名）</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_NAME}}</span>
+                        <span class="tgd-var-desc">用户名称</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{STATUS_TEXT}}</span>
+                        <span class="tgd-var-desc">状态文本（Online等）</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_AVATAR}}</span>
+                        <span class="tgd-var-desc">角色头像（base64/URL）</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_AVATAR}}</span>
+                        <span class="tgd-var-desc">用户头像（base64/URL）</span>
+                      </div>
+                    </div>
+                    <div class="tgd-text" style="margin-top: 8px; color: #888; font-size: 11px;">
+                      * 变量名全大写+下划线，如 <code>{{CHAR_NAME}}</code> 不是 <code>{{charName}}</code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                      核心选择器
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px; line-height: 1.6;">
+                      <code>.chat-detail-header</code> 顶栏容器<br>
+                      <code>.chat-detail-back-btn</code> 返回按钮<br>
+                      <code>.chat-detail-avatar</code> 头像<br>
+                      <code>.chat-detail-info</code> 名字/状态<br>
+                      <code>.chat-detail-actions</code> 操作区容器<br>
+                      <code>.chat-affection-indicator</code> 好感度标识<br>
+                      <code>.chat-detail-icon-btn</code> 设置按钮<br>
+                      <code>.theme-custom-html</code> 注入HTML容器
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第二页：常见问题 -->
+                <div class="tgd-page" data-page="1">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                    常见问题
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q1: 好感度/返回/设置按钮样式无法覆盖？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>JavaScript设置了内联样式，优先级比CSS高<br><br>
+                      <strong>解决：</strong>系统已自动处理。如果仍有问题，确保使用<strong>完整覆盖</strong>：
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-affection-indicator {<br>
+&nbsp;&nbsp;width: 26px !important;<br>
+&nbsp;&nbsp;height: 26px !important;<br>
+&nbsp;&nbsp;overflow: hidden !important;<br>
+&nbsp;&nbsp;position: relative !important;<br>
+}<br>
+.chat-affection-indicator > * {<br>
+&nbsp;&nbsp;display: none !important;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q2: 返回按钮大小/边框不对？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>原始CSS有多个属性，只覆盖部分会保留其他<br><br>
+                      <strong>解决：</strong>使用min/max-width/height强制固定尺寸，显式设置border:none
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-detail-back-btn {<br>
+&nbsp;&nbsp;width: 30px !important;<br>
+&nbsp;&nbsp;min-width: 30px !important;<br>
+&nbsp;&nbsp;max-width: 30px !important;<br>
+&nbsp;&nbsp;border: none !important;<br>
+&nbsp;&nbsp;padding: 0 !important;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q3: 按钮图标样式无法修改？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>CSS无法修改SVG的path属性，只能改颜色/大小<br><br>
+                      <strong>解决：</strong>隐藏原始SVG，用伪元素+SVG data URL显示新图标
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+/* 返回按钮：隐藏原SVG */<br>
+.chat-detail-back-btn svg {<br>
+&nbsp;&nbsp;display: none !important;<br>
+}<br>
+/* 用伪元素显示简单箭头 */<br>
+.chat-detail-back-btn::before {<br>
+&nbsp;&nbsp;content: '' !important;<br>
+&nbsp;&nbsp;width: 16px !important;<br>
+&nbsp;&nbsp;height: 16px !important;<br>
+&nbsp;&nbsp;background-image: url("data:image/svg+xml,...") !important;<br>
+&nbsp;&nbsp;background-size: contain !important;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q4: HTML中的变量没有被替换？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>检查：</strong><br>
+                      1. 变量名必须全大写：<code>{{CHAR_NAME}}</code><br>
+                      2. 确保系统版本为v3.0+（已支持HTML变量替换）<br>
+                      3. 变量两边是双花括号，无空格
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q5: 顶栏过高遮挡聊天内容？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原理：</strong>系统会自动计算顶栏高度并调整内容区域<br><br>
+                      <strong>如果自动调整不准确，可手动设置：</strong>
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-messages-area {<br>
+&nbsp;&nbsp;top: 280px !important; /* 根据顶栏实际高度调整 */<br>
+}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第三页：AI生成提示词 -->
+                <div class="tgd-page" data-page="2">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="3"/><path d="M12 8v3"/></svg>
+                    AI 生成提示词
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                      通用模板
+                    </div>
+                    <div class="tgd-text" style="margin-bottom: 10px;">
+                      复制下面的提示词发给 AI，描述你想要的风格即可生成主题代码！
+                    </div>
+                    <div class="tgd-prompt-box" id="tgdHeaderPromptContent">请帮我设计一个 <strong>[描述风格，如Instagram/Twitter]</strong> 的聊天顶栏主题，包含CSS和HTML。
+
+<strong>可用变量：</strong>
+{{CHAR_NAME}} 角色名, {{USER_NAME}} 用户名
+{{CHAR_AVATAR}} 角色头像, {{USER_AVATAR}} 用户头像
+{{STATUS_TEXT}} 状态文本
+
+<strong>核心选择器：</strong>
+.chat-detail-header 顶栏容器
+.chat-detail-back-btn 返回按钮
+.chat-detail-avatar 头像
+.chat-detail-info / .chat-detail-name / .chat-detail-status
+.chat-detail-actions 操作区
+.chat-affection-indicator 好感度标识
+.chat-detail-icon-btn 设置按钮
+.theme-custom-html 注入HTML容器
+
+<strong>重要规则：</strong>
+1. 所有CSS必须加 !important
+2. 顶部边距用 var(--app-header-total-padding, 20px)
+3. 替换图标需隐藏原SVG，用伪元素+data:image/svg+xml
+4. 好感度标识需 .chat-affection-indicator > * {display:none}
+5. 返回按钮需完整覆盖：width/min-width/max-width/border
+
+<strong>额外需求：</strong><em>[按钮样式/布局/头像位置等]</em></div>
+                    <button class="tgd-copy-btn" onclick="copyHeaderThemePrompt()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                      </svg>
+                      复制提示词
+                    </button>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2"/><circle cx="6" cy="18" r="3"/><path d="M9.5 10.5L6 15M13 9l3.5 6"/></svg>
+                      高级功能示例
+                    </div>
+                    <div class="tgd-text">
+                      <strong>Instagram风格：</strong><br>
+                      "顶部导航栏黑色，返回按钮圆形深灰底，好感度变铃铛，设置变三点"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>双头像布局：</strong><br>
+                      "两个头像并排居中，用伪元素添加用户头像，都带十字徽章"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>社交资料页：</strong><br>
+                      "大头像左侧，右侧显示统计数据，下方有关注和消息按钮"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>磨砂玻璃：</strong><br>
+                      "backdrop-filter: blur(20px); background: rgba(255,255,255,0.75)"
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <!-- ========== End 顶栏主题教程 ========== -->
+
+                <!-- ========== 底栏主题教程 ========== -->
+                <div class="tgd-input-guide" style="display: none;">
+                <!-- 第一页：底栏使用指南 -->
+                <div class="tgd-page active" data-page="0">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    使用指南
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      快速开始
+                    </div>
+                    <div class="tgd-text">
+                      <strong>1.</strong> 底栏包含：附件按钮、输入框、发送按钮<br>
+                      <strong>2.</strong> 用CSS伪元素替换按钮图标外观<br>
+                      <strong>3.</strong> 装饰图标推荐用inline SVG data URL<br>
+                      <strong>4.</strong> 点击「新建预设」保存你的主题
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18M9 21V9"/></svg>
+                      HTML结构
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; line-height: 1.5;">
+                      <code style="color: #ccc;">
+.chat-input-area<br>
+├─ .chat-attach-btn (附件/+号按钮)<br>
+├─ .chat-input-wrapper (输入框容器)<br>
+│  └─ .chat-message-input (文本框)<br>
+├─ .chat-send-btn (发送按钮)<br>
+└─ .theme-decor-layer (装饰层容器)<br>
+&nbsp;&nbsp;&nbsp;├─ .theme-decor-1 ~ .theme-decor-5
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      可用变量（5个）
+                    </div>
+                    <div class="tgd-var-table">
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_NAME}}</span>
+                        <span class="tgd-var-desc">角色名称</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_NAME}}</span>
+                        <span class="tgd-var-desc">用户名称</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{CHAR_AVATAR}}</span>
+                        <span class="tgd-var-desc">角色头像</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{USER_AVATAR}}</span>
+                        <span class="tgd-var-desc">用户头像</span>
+                      </div>
+                      <div class="tgd-var-row">
+                        <span class="tgd-var-name">{{STATUS_TEXT}}</span>
+                        <span class="tgd-var-desc">状态文本</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                      核心选择器
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px; line-height: 1.6;">
+                      <code>.chat-input-area</code> 底栏容器<br>
+                      <code>.chat-attach-btn</code> 附件按钮<br>
+                      <code>.chat-input-wrapper</code> 输入框容器<br>
+                      <code>.chat-message-input</code> 文本输入框<br>
+                      <code>.chat-send-btn</code> 发送按钮<br>
+                      <code>.theme-decor-layer</code> 装饰层容器<br>
+                      <code>.theme-decor-1~5</code> 装饰元素
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第二页：常见问题 -->
+                <div class="tgd-page" data-page="1">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                    常见问题
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q1: 装饰层(.theme-decor-*)定位不准？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>装饰层是.chat-input-area的子元素，定位参照物是整个底栏，不是输入框容器。<br><br>
+                      <strong>解决：</strong>改用.chat-input-wrapper的伪元素(::before/::after)，它们定位参照输入框本身更精准。
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q2: 如何在输入框内添加装饰图标？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>推荐：</strong>使用 inline SVG data URL + 伪元素<br>
+                    </div>
+                    <div class="tgd-text" style="font-size: 9px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-input-wrapper::before {<br>
+&nbsp;&nbsp;content: '';<br>
+&nbsp;&nbsp;position: absolute;<br>
+&nbsp;&nbsp;right: 50px; top: 50%;<br>
+&nbsp;&nbsp;transform: translateY(-50%);<br>
+&nbsp;&nbsp;width: 24px; height: 24px;<br>
+&nbsp;&nbsp;background-image: url("data:image/svg+xml,...");<br>
+&nbsp;&nbsp;pointer-events: none;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q3: 装饰图标和文字重叠？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>原因：</strong>输入框文字区域没有为图标预留空间。<br><br>
+                      <strong>解决：</strong>给输入框添加右边距
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-message-input {<br>
+&nbsp;&nbsp;margin-right: 70px !important; /* 为图标留空间 */<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q4: 替换按钮图标的技巧？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>1.</strong> 隐藏原SVG: <code>按钮 svg { display: none; }</code><br>
+                      <strong>2.</strong> 用::before/::after画新图标<br>
+                      <strong>3.</strong> 按钮需设置 <code>position: relative</code>
+                    </div>
+                    <div class="tgd-text" style="font-size: 9px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+/* 相机图标示例 */<br>
+.chat-attach-btn::before { /* 机身 */<br>
+&nbsp;&nbsp;content: ''; position: absolute;<br>
+&nbsp;&nbsp;width: 18px; height: 14px;<br>
+&nbsp;&nbsp;border: 2.5px solid #fff;<br>
+&nbsp;&nbsp;border-radius: 3px;<br>
+}<br>
+.chat-attach-btn::after { /* 镜头 */<br>
+&nbsp;&nbsp;content: ''; position: absolute;<br>
+&nbsp;&nbsp;width: 7px; height: 7px;<br>
+&nbsp;&nbsp;border: 2px solid #fff;<br>
+&nbsp;&nbsp;border-radius: 50%;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title" style="color: #aaa;">
+                      Q5: 发送按钮放在输入框内部？
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      使用绝对定位将发送按钮放在输入框容器内：
+                    </div>
+                    <div class="tgd-text" style="font-size: 10px; background: #1a1a1a; padding: 8px; border-radius: 4px; margin-top: 6px;">
+                      <code style="color: #ccc;">
+.chat-send-btn {<br>
+&nbsp;&nbsp;position: absolute !important;<br>
+&nbsp;&nbsp;right: 8px !important;<br>
+&nbsp;&nbsp;top: 50% !important;<br>
+&nbsp;&nbsp;transform: translateY(-50%) !important;<br>
+}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 第三页：AI生成提示词 -->
+                <div class="tgd-page" data-page="2">
+                  <div class="tgd-page-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="3"/><path d="M12 8v3"/></svg>
+                    AI 生成提示词
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                      通用模板
+                    </div>
+                    <div class="tgd-text" style="margin-bottom: 10px;">
+                      复制下面的提示词发给 AI，描述你想要的风格即可生成主题代码！
+                    </div>
+                    <div class="tgd-prompt-box" id="tgdInputPromptContent">请帮我设计一个 <strong>[描述风格]</strong> 的聊天底栏CSS主题。
+
+<strong>变量（可选使用）：</strong>
+颜色：{{USER_BG}}, {{USER_TEXT}}, {{CHAR_BG}}, {{CHAR_TEXT}}
+头像：{{USER_AVATAR}}, {{CHAR_AVATAR}}
+
+<strong>选择器：</strong>
+.chat-input-area（底栏容器）
+.chat-attach-btn（附件/+号按钮）
+.chat-input-wrapper（输入框容器）
+.chat-message-input（文本输入框）
+.chat-send-btn（发送按钮）
+.theme-decor-layer（装饰层容器）
+.theme-decor-1 ~ .theme-decor-5（装饰元素）
+
+<strong>要求：</strong>所有样式加 !important
+<strong>额外：</strong><em>[按钮图标替换/装饰图标位置/配色方案等]</em></div>
+                    <button class="tgd-copy-btn" onclick="copyThemePrompt('input')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                      </svg>
+                      复制提示词
+                    </button>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2"/><circle cx="6" cy="18" r="3"/><path d="M9.5 10.5L6 15M13 9l3.5 6"/></svg>
+                      高级功能示例
+                    </div>
+                    <div class="tgd-text">
+                      <strong>替换按钮图标：</strong><br>
+                      "隐藏原SVG图标，用::before和::after伪元素画相机/表情等图标"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>输入框内装饰图标：</strong><br>
+                      "用.chat-input-wrapper::before添加麦克风图标，inline SVG data URL"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>发送按钮放在输入框内：</strong><br>
+                      ".chat-send-btn { position: absolute; right: 8px; }"
+                    </div>
+                    <div class="tgd-text">
+                      <strong>渐变背景按钮：</strong><br>
+                      ".chat-attach-btn { background: linear-gradient(135deg, #color1, #color2); border-radius: 50%; }"
+                    </div>
+                  </div>
+
+                  <div class="tgd-section">
+                    <div class="tgd-section-title">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      常见问题
+                    </div>
+                    <div class="tgd-text" style="font-size: 11px;">
+                      <strong>Q: 装饰图标定位不准确？</strong><br>
+                      A: 优先使用.chat-input-wrapper的伪元素，而不是.theme-decor-*<br><br>
+                      <strong>Q: 图标和文字重叠？</strong><br>
+                      A: 给.chat-message-input添加margin-right为图标预留空间
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <!-- ========== End 底栏主题教程 ========== -->
+
               </div>
 
               <!-- 底部翻页按钮 -->
